@@ -12,6 +12,7 @@ import L from 'leaflet';
 import './styles.css';
 import 'leaflet/dist/leaflet.css';
 import MapEvents from './components/MapEvents';
+import MapFlyTo from './components/MapFlyTo';
 
 const markerIcon = new L.Icon({
   iconUrl: '/marker.png',
@@ -43,24 +44,7 @@ function App() {
     );
   }, []);
 
-  // const MapEvents = () => {
-  //   useMapEvents({
-  //     click: (e) => setCenter(e.latlng),
-  //   });
-  //   return null;
-  // };
   if (!center) return;
-
-  const MapFlyTo = ({ coords }: { coords: null | L.LatLngExpression }) => {
-    if (!coords) return;
-
-    const map = useMap();
-    useEffect(() => {
-      map.flyTo(coords);
-    }, [coords]);
-
-    return null;
-  };
 
   return (
     <MapContainer center={center} zoom={9}>
