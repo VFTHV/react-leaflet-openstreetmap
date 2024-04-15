@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -11,6 +11,7 @@ import L from 'leaflet';
 
 import './styles.css';
 import 'leaflet/dist/leaflet.css';
+import MapEvents from './components/MapEvents';
 
 const markerIcon = new L.Icon({
   iconUrl: '/marker.png',
@@ -42,21 +43,12 @@ function App() {
     );
   }, []);
 
-  // const map = useMap()
-  // map.flyTo
-
-  // const flyToNewCenter = (newCenter: L.LatLngExpression) => {
-
+  // const MapEvents = () => {
+  //   useMapEvents({
+  //     click: (e) => setCenter(e.latlng),
+  //   });
+  //   return null;
   // };
-
-  const [coords, setCoords] = useState<null | L.LatLngExpression>(null);
-
-  const MapEvents = () => {
-    useMapEvents({
-      click: (e) => setCoords(e.latlng),
-    });
-    return null;
-  };
   if (!center) return;
 
   const MapFlyTo = ({ coords }: { coords: null | L.LatLngExpression }) => {
@@ -64,7 +56,6 @@ function App() {
 
     const map = useMap();
     useEffect(() => {
-      console.log('in useeffect flyto');
       map.flyTo(coords);
     }, [coords]);
 
@@ -82,8 +73,8 @@ function App() {
           <b>You are here</b>
         </Popup>
       </Marker>
-      <MapEvents />
-      <MapFlyTo coords={coords} />
+      <MapEvents setCenter={setCenter} />
+      <MapFlyTo coords={center} />
     </MapContainer>
   );
 }
