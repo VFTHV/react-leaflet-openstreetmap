@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  FeatureGroup,
+} from 'react-leaflet';
+import { EditControl } from 'react-leaflet-draw';
 import L from 'leaflet';
-
 import './styles.css';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
+
 import MapEvents from './components/MapEvents';
 import MapFlyTo from './components/MapFlyTo';
 import countries from './assets/capitals.json';
@@ -21,14 +29,12 @@ function App() {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log('in useeffect');
         setCenter({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
       },
       (posError) => {
-        console.log(posError);
         alert(posError.message);
         setCenter({
           lat: 53,
@@ -42,20 +48,33 @@ function App() {
 
   return (
     <MapContainer center={center} zoom={9}>
+      <FeatureGroup>
+        <EditControl
+          position="topright"
+          onCreated={() => console.log('created')}
+          draw={{
+            polyline: false,
+            rectangle: false,
+            circle: false,
+            marker: false,
+            circlemarker: false,
+          }}
+        />
+      </FeatureGroup>
       <TileLayer
         url="https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=LwTxjnv8mJzfa08KMbni"
         attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
       />
-      <Marker position={center} icon={markerIcon}>
+      {/* <Marker position={center} icon={markerIcon}>
         <Popup>You are here</Popup>
-      </Marker>
+      </Marker> */}
       <MapEvents setCenter={setCenter} />
-      <MapFlyTo coords={center} />
+      {/* <MapFlyTo coords={center} /> */}
 
-      {countries.features.map((country) => {
+      {countries.features.map((country, i) => {
         const [lng, lat] = country.geometry.coordinates;
         return (
-          <Marker position={[lat, lng]}>
+          <Marker key={i} position={[lat, lng]}>
             <Popup>{country.properties.city}</Popup>
           </Marker>
         );
