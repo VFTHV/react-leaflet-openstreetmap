@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-  useMap,
-} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
 import './styles.css';
 import 'leaflet/dist/leaflet.css';
 import MapEvents from './components/MapEvents';
 import MapFlyTo from './components/MapFlyTo';
+import countries from './assets/capitals.json';
 
 const markerIcon = new L.Icon({
   iconUrl: '/marker.png',
@@ -53,12 +47,19 @@ function App() {
         attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
       />
       <Marker position={center} icon={markerIcon}>
-        <Popup>
-          <b>You are here</b>
-        </Popup>
+        <Popup>You are here</Popup>
       </Marker>
       <MapEvents setCenter={setCenter} />
       <MapFlyTo coords={center} />
+
+      {countries.features.map((country) => {
+        const [lng, lat] = country.geometry.coordinates;
+        return (
+          <Marker position={[lat, lng]}>
+            <Popup>{country.properties.city}</Popup>
+          </Marker>
+        );
+      })}
     </MapContainer>
   );
 }
